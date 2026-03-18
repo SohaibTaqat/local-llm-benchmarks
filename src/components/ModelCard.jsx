@@ -10,14 +10,15 @@ function StatBadge({ label, value, unit, accent }) {
         {label}
       </span>
       <span style={{
-        fontSize: 22,
+        fontSize: 17,
         fontWeight: 800,
         color: accent,
         fontFamily: "'JetBrains Mono', monospace",
         lineHeight: 1,
+        whiteSpace: 'nowrap',
       }}>
         {value}
-        <span style={{ fontSize: 11, fontWeight: 400, color: '#666', marginLeft: 3 }}>{unit}</span>
+        <span style={{ fontSize: 10, fontWeight: 400, color: '#666', marginLeft: 3 }}>{unit}</span>
       </span>
     </div>
   );
@@ -105,8 +106,7 @@ export default function ModelCard({ model }) {
             fontSize: 15,
             color,
             whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
+            display: 'inline-block',
           }}>
             {name}
           </div>

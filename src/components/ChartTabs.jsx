@@ -62,7 +62,7 @@ export default function ChartTabs({ models, tab, setTab }) {
           <div>
             <div style={chartLabel}>Raw generation speed (tok/s) vs max output tokens</div>
             <ResponsiveContainer width="100%" height={340}>
-              <BarChart data={rawData} barCategoryGap="20%">
+              <BarChart data={rawData} barCategoryGap="20%" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
                 <CartesianGrid {...gridProps} />
                 <XAxis
                   dataKey="name"
@@ -86,7 +86,7 @@ export default function ChartTabs({ models, tab, setTab }) {
           <div>
             <div style={chartLabel}>Prefill speed (tok/s) vs input context length</div>
             <ResponsiveContainer width="100%" height={340}>
-              <LineChart data={prefillData}>
+              <LineChart data={prefillData} margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
                 <CartesianGrid {...gridProps} />
                 <XAxis
                   dataKey="name"
@@ -119,7 +119,7 @@ export default function ChartTabs({ models, tab, setTab }) {
           <div>
             <div style={chartLabel}>Total throughput (tok/s) scaling across concurrent batches</div>
             <ResponsiveContainer width="100%" height={340}>
-              <LineChart data={throughputData}>
+              <LineChart data={throughputData} margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
                 <CartesianGrid {...gridProps} />
                 <XAxis dataKey="name" {...axisProps} />
                 <YAxis
