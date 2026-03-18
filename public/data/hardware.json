@@ -1,0 +1,10 @@
+{
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+  "gpu_count": 2,
+  "vram_per_gpu_mib": 97887,
+  "driver_version": "590.48.01",
+  "cuda_version": "13.1",
+  "vllm_version": "0.17.1rc1.dev168+gb3debb7e7",
+  "runs_per_test": 3,
+  "last_updated": "2026-03-18"
+}
