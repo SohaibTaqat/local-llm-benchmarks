@@ -1,4 +1,4 @@
-import { getColor, getBg } from './colors';
+import { getOrgColor, getBg } from './colors';
 
 export function slugify(model) {
   return model
@@ -12,9 +12,25 @@ export function displayName(model) {
   return model.split('/').pop();
 }
 
+function getOrg(model) {
+  return model.includes('/') ? model.split('/')[0] : 'Other';
+}
+
 export function transformBenchmarks(raw) {
-  return raw.map((entry, i) => {
-    const color = getColor(i);
+  // Pre-compute org sizes for color assignment
+  const orgCounts = {};
+  const orgIndexes = {};
+  raw.forEach((entry) => {
+    const org = getOrg(entry.metadata.model);
+    orgCounts[org] = (orgCounts[org] || 0) + 1;
+    orgIndexes[org] = 0;
+  });
+
+  return raw.map((entry) => {
+    const org = getOrg(entry.metadata.model);
+    const indexInOrg = orgIndexes[org]++;
+    const orgSize = orgCounts[org];
+    const color = getOrgColor(org, indexInOrg, orgSize);
     const id = slugify(entry.metadata.model);
     const name = displayName(entry.metadata.model);
 
