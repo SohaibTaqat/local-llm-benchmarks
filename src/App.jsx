@@ -2,24 +2,30 @@ import { useState, useMemo } from 'react';
 import { useData } from './hooks/useData';
 import ModelSelector from './components/ModelSelector';
 import ModelCard from './components/ModelCard';
+import ModelTable from './components/ModelTable';
 import ChartTabs from './components/ChartTabs';
 import Footer from './components/Footer';
 import { computeWinners } from './utils/transform';
+
+const INITIAL_CARDS = 8;
 
 export default function App() {
   const { models, hardware, error } = useData();
   const [selected, setSelected] = useState(null);
   const [tab, setTab] = useState(0);
-
-  // Initialize selection to all models once data loads
-  if (models && selected === null) {
-    setSelected(new Set(models.map((m) => m.id)));
-  }
+  const [view, setView] = useState('table');
+  const [cardsExpanded, setCardsExpanded] = useState(false);
 
   const winners = useMemo(() => {
     if (!models) return {};
     return computeWinners(models);
   }, [models]);
+
+  // Initialize selection to category winners only
+  if (models && selected === null) {
+    const winnerIds = new Set(Object.values(winners).map((w) => w.id).filter(Boolean));
+    setSelected(winnerIds);
+  }
 
   const filteredModels = useMemo(() => {
     if (!models || !selected) return [];
@@ -100,34 +106,115 @@ export default function App() {
         onClearAll={clearAll}
       />
 
-      {/* Model Cards */}
+      {/* View Toggle */}
       <div style={{
         maxWidth: 1100,
-        margin: '0 auto',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-        gap: 16,
-        marginBottom: 28,
+        margin: '0 auto 12px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 4,
       }}>
-        {filteredModels.map((m) => (
-          <ModelCard key={m.id} model={m} winners={winners} />
+        {['table', 'cards'].map((v) => (
+          <button
+            key={v}
+            onClick={() => setView(v)}
+            style={{
+              background: view === v ? 'rgba(255,255,255,0.08)' : 'transparent',
+              color: view === v ? '#fff' : '#555',
+              border: view === v ? '1px solid rgba(255,255,255,0.12)' : '1px solid transparent',
+              borderRadius: 5,
+              padding: '4px 12px',
+              fontSize: 11,
+              fontFamily: "'JetBrains Mono', monospace",
+              fontWeight: view === v ? 600 : 400,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              textTransform: 'capitalize',
+            }}
+          >
+            {v}
+          </button>
         ))}
       </div>
 
-      {/* Charts */}
       {filteredModels.length > 0 ? (
-        <ChartTabs models={filteredModels} tab={tab} setTab={setTab} />
+        <>
+          {/* Model Data View */}
+          {view === 'table' ? (
+            <ModelTable models={filteredModels} winners={winners} />
+          ) : (
+            <div style={{ maxWidth: 1100, margin: '0 auto', marginBottom: 28 }}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                gap: 16,
+              }}>
+                {(cardsExpanded ? filteredModels : filteredModels.slice(0, INITIAL_CARDS)).map((m) => (
+                  <ModelCard key={m.id} model={m} winners={winners} />
+                ))}
+              </div>
+              {filteredModels.length > INITIAL_CARDS && (
+                <div style={{ textAlign: 'center', marginTop: 12 }}>
+                  <button
+                    onClick={() => setCardsExpanded(!cardsExpanded)}
+                    style={{
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      borderRadius: 4,
+                      padding: '5px 16px',
+                      fontSize: 11,
+                      fontFamily: "'JetBrains Mono', monospace",
+                      color: '#888',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {cardsExpanded ? 'Show less' : `Show ${filteredModels.length - INITIAL_CARDS} more`}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Charts */}
+          <ChartTabs models={filteredModels} tab={tab} setTab={setTab} />
+        </>
       ) : (
         <div style={{
           maxWidth: 1100,
           margin: '0 auto',
           textAlign: 'center',
-          padding: '60px 0',
-          color: '#555',
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: 13,
+          padding: '80px 0',
         }}>
-          Select at least one model to view charts
+          <div style={{
+            fontSize: 32,
+            marginBottom: 12,
+            opacity: 0.15,
+          }}>
+            ∅
+          </div>
+          <div style={{
+            color: '#555',
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 13,
+            marginBottom: 16,
+          }}>
+            No models selected
+          </div>
+          <button
+            onClick={selectAll}
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 6,
+              padding: '8px 20px',
+              fontSize: 12,
+              fontFamily: "'JetBrains Mono', monospace",
+              color: '#888',
+              cursor: 'pointer',
+            }}
+          >
+            Select all models
+          </button>
         </div>
       )}
 
