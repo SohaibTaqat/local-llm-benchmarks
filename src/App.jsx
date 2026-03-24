@@ -59,6 +59,7 @@ export default function App() {
 
   const selectAll = () => setSelected(new Set(models.map((m) => m.id)));
   const clearAll = () => setSelected(new Set());
+  const selectTop = () => setSelected(new Set(Object.values(winners).map((w) => w.id).filter(Boolean)));
 
   return (
     <div style={{
@@ -104,6 +105,7 @@ export default function App() {
         onToggle={toggle}
         onSelectAll={selectAll}
         onClearAll={clearAll}
+        onSelectTop={selectTop}
       />
 
       {/* View Toggle */}

@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 
-export default function ModelSelector({ models, selected, onToggle, onSelectAll, onClearAll }) {
+export default function ModelSelector({ models, selected, onToggle, onSelectAll, onClearAll, onSelectTop }) {
   const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
   const panelRef = useRef(null);
@@ -182,6 +182,7 @@ export default function ModelSelector({ models, selected, onToggle, onSelectAll,
                 minWidth: 0,
               }}
             />
+            <button onClick={(e) => { e.stopPropagation(); onSelectTop(); }} style={bulkBtn}>Top</button>
             <button onClick={(e) => { e.stopPropagation(); onSelectAll(); }} style={bulkBtn}>All</button>
             <button onClick={(e) => { e.stopPropagation(); onClearAll(); }} style={bulkBtn}>None</button>
           </div>
