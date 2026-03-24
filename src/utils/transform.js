@@ -55,6 +55,33 @@ export function transformBenchmarks(raw) {
   });
 }
 
+export function computeWinners(models) {
+  const metrics = [
+    { key: 'peakGen', label: 'Fastest Generation', getValue: (m) => Math.max(...Object.values(m.raw)) },
+    { key: 'ttft', label: 'Lowest TTFT', getValue: (m) => m.ttft, lower: true },
+    { key: 'throughput', label: 'Highest Throughput', getValue: (m) => m.throughput[20] },
+    { key: 'vram', label: 'Most VRAM Efficient', getValue: (m) => {
+      const avgPct = m.gpuMem.reduce((s, g) => s + g.pct, 0) / m.gpuMem.length;
+      return avgPct;
+    }, lower: true },
+  ];
+
+  const winners = {};
+  for (const metric of metrics) {
+    let best = null;
+    let bestVal = metric.lower ? Infinity : -Infinity;
+    for (const m of models) {
+      const val = metric.getValue(m);
+      if (metric.lower ? val < bestVal : val > bestVal) {
+        bestVal = val;
+        best = m.id;
+      }
+    }
+    winners[metric.key] = { id: best, label: metric.label };
+  }
+  return winners;
+}
+
 export function buildRawData(models) {
   return ['128', '512', '1024', '2048', '4096'].map((k) => ({
     name: k,

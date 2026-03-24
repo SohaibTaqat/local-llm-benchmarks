@@ -4,6 +4,7 @@ import ModelSelector from './components/ModelSelector';
 import ModelCard from './components/ModelCard';
 import ChartTabs from './components/ChartTabs';
 import Footer from './components/Footer';
+import { computeWinners } from './utils/transform';
 
 export default function App() {
   const { models, hardware, error } = useData();
@@ -14,6 +15,11 @@ export default function App() {
   if (models && selected === null) {
     setSelected(new Set(models.map((m) => m.id)));
   }
+
+  const winners = useMemo(() => {
+    if (!models) return {};
+    return computeWinners(models);
+  }, [models]);
 
   const filteredModels = useMemo(() => {
     if (!models || !selected) return [];
@@ -104,7 +110,7 @@ export default function App() {
         marginBottom: 28,
       }}>
         {filteredModels.map((m) => (
-          <ModelCard key={m.id} model={m} />
+          <ModelCard key={m.id} model={m} winners={winners} />
         ))}
       </div>
 

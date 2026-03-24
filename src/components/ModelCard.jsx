@@ -58,9 +58,33 @@ function MemBar({ used, total, pct, color, label }) {
 
 import { useRef, useEffect, useState } from 'react';
 
-export default function ModelCard({ model }) {
+function WinnerBadge({ label }) {
+  return (
+    <span style={{
+      fontSize: 9,
+      fontFamily: "'JetBrains Mono', monospace",
+      fontWeight: 700,
+      color: '#fbbf24',
+      background: 'rgba(251, 191, 36, 0.1)',
+      border: '1px solid rgba(251, 191, 36, 0.25)',
+      borderRadius: 3,
+      padding: '1px 6px',
+      whiteSpace: 'nowrap',
+    }}>
+      ★ {label}
+    </span>
+  );
+}
+
+export default function ModelCard({ model, winners = {} }) {
   const { name, color, bg, ttft, raw, throughput, gpuMem } = model;
   const peakGen = Math.max(...Object.values(raw)).toFixed(0);
+
+  const badges = [];
+  if (winners.peakGen?.id === model.id) badges.push(winners.peakGen.label);
+  if (winners.ttft?.id === model.id) badges.push(winners.ttft.label);
+  if (winners.throughput?.id === model.id) badges.push(winners.throughput.label);
+  if (winners.vram?.id === model.id) badges.push(winners.vram.label);
   const textRef = useRef(null);
   const wrapperRef = useRef(null);
   const [scrollDist, setScrollDist] = useState(0);
@@ -125,6 +149,11 @@ export default function ModelCard({ model }) {
           TTFT {ttft}ms
         </div>
       </div>
+      {badges.length > 0 && (
+        <div style={{ display: 'flex', gap: 4, marginBottom: 10, flexWrap: 'wrap' }}>
+          {badges.map((b) => <WinnerBadge key={b} label={b} />)}
+        </div>
+      )}
       <div style={{ display: 'flex', gap: 24, marginBottom: 16 }}>
         <StatBadge label="Peak Gen" value={peakGen} unit="tok/s" accent={color} />
         <StatBadge label="Throughput x20" value={throughput[20].toLocaleString()} unit="tok/s" accent={color} />
