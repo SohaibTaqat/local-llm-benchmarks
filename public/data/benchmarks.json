@@ -198,5 +198,55 @@
         "utilization_pct": 93.4
       }
     ]
+  },
+  {
+    "timestamp": "2026-03-24T12:17:12.185594",
+    "metadata": {
+      "model": "nvidia/Nemotron-Cascade-2-30B-A3B",
+      "url": "http://localhost:8000",
+      "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+      "gpu_count": 2,
+      "vram_per_gpu_mib": 97887,
+      "driver_version": "590.48.01",
+      "cuda_version": "13.1",
+      "vllm_version": "0.17.1rc1.dev168+gb3debb7e7",
+      "runs_per_test": 3
+    },
+    "ttft_ms": 4.59,
+    "raw_speed_tok_s": {
+      "max_128": 250.73,
+      "max_512": 266.04,
+      "max_1024": 268.25,
+      "max_2048": 269.6,
+      "max_4096": 270.23
+    },
+    "prefill_speed_tok_s": {
+      "input_500": 249.68,
+      "input_1000": 244.67,
+      "input_4000": 225.45,
+      "input_8000": 200.62
+    },
+    "throughput_tok_s": {
+      "batch_1": 261.27,
+      "batch_5": 579.79,
+      "batch_10": 850.59,
+      "batch_20": 1510.2
+    },
+    "gpu_memory": [
+      {
+        "gpu": 0,
+        "used_mib": 89732,
+        "total_mib": 97887,
+        "free_mib": 7519,
+        "utilization_pct": 91.7
+      },
+      {
+        "gpu": 1,
+        "used_mib": 91510,
+        "total_mib": 97887,
+        "free_mib": 5741,
+        "utilization_pct": 93.5
+      }
+    ]
   }
 ]
